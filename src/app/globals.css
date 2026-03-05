@@ -125,12 +125,20 @@
   }
 }
 
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card-enter {
+  animation: cardFadeIn 0.25s ease-out both;
+}
+
 /* FullCalendar dark theme overrides */
 .fc {
   --fc-border-color: var(--border);
   --fc-button-bg-color: var(--primary);
   --fc-button-text-color: var(--primary-foreground);
-  --fc-today-bg-color: oklch(0.269 0.02 270);
+  --fc-today-bg-color: oklch(0.94 0.04 264);
   --fc-event-text-color: white;
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: var(--muted);

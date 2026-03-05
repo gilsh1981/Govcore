@@ -1,0 +1,280 @@
+{
+  "login": {
+    "title": "התחברות ל-GovCore",
+    "subtitle": "פלטפורמת ממשל חכם מבוססת AI",
+    "error": "פרטי התחברות שגויים.",
+    "identifierLabel": "אימייל או טלפון",
+    "identifierPlaceholder": "admin@govcore.local / 0501234567",
+    "passwordLabel": "סיסמה",
+    "submit": "התחברות",
+    "submitting": "מתחבר...",
+    "tagline": "ועדות \u00b7 ישיבות \u00b7 החלטות \u00b7 AI"
+  },
+  "sidebar": {
+    "appName": "GovCore",
+    "dashboard": "לוח בקרה",
+    "committees": "ועדות",
+    "calendar": "לוח שנה",
+    "reports": "דוחות",
+    "organization": "ארגון",
+    "settings": "הגדרות"
+  },
+  "header": {
+    "title": "GovCore",
+    "notifications": "התראות"
+  },
+  "orgSwitcher": {
+    "switchOrganization": "החלף ארגון"
+  },
+  "userMenu": {
+    "myAccount": "החשבון שלי",
+    "profile": "פרופיל",
+    "settings": "הגדרות",
+    "signOut": "התנתק",
+    "adminBadge": "מנהל",
+    "admin": "מנהל",
+    "secretary": "מזכיר/ה",
+    "member": "חבר/ה"
+  },
+  "dashboard": {
+    "title": "לוח בקרה",
+    "welcome": "שלום, {name}",
+    "subtitle": "סקירת הממשל שלך",
+    "quickActions": "פעולות מהירות",
+    "committees": "ועדות",
+    "upcomingMeetings": "ישיבות קרובות",
+    "openDecisions": "החלטות פתוחות",
+    "recentMeetings": "ישיבות אחרונות",
+    "noMeetings": "אין ישיבות עדיין.",
+    "noOpenDecisions": "אין החלטות פתוחות.",
+    "due": "יעד",
+    "weeklyOverview": "סקירה שבועית",
+    "thisWeek": "השבוע",
+    "upcomingCommittees": "ועדות השבוע",
+    "upcomingMeetings": "ישיבות קרובות",
+    "unplannedEvents": "אירועים לא מתוכננים",
+    "noWeeklyItems": "אין ישיבות מתוכננות השבוע.",
+    "documents": "מסמכים",
+    "sharedWithMe": "שותף איתי",
+    "myDocuments": "המסמכים שלי",
+    "voiceRecordings": "הקלטות קוליות",
+    "noDocuments": "אין מסמכים עדיין.",
+    "share": "שתף",
+    "edit": "עריכה",
+    "download": "הורדה",
+    "delete": "מחיקה",
+    "adminControl": "לוח בקרה למנהל",
+    "manageUsers": "ניהול משתמשים",
+    "assignRoles": "הקצאת תפקידים",
+    "manageCommittees": "ניהול ועדות",
+    "manageMeetings": "ניהול ישיבות",
+    "managePermissions": "ניהול הרשאות",
+    "systemSettings": "הגדרות מערכת"
+  },
+  "committees": {
+    "title": "ועדות",
+    "empty": "אין ועדות עדיין. צור אחת כדי להתחיל.",
+    "name": "שם",
+    "members": "חברים",
+    "meetings": "ישיבות"
+  },
+  "committeeDetail": {
+    "backLink": "ועדות",
+    "membersTitle": "חברים",
+    "detailsTitle": "פרטים",
+    "meetingsLabel": "ישיבות",
+    "createdLabel": "נוצר",
+    "noMembers": "אין חברים עדיין."
+  },
+  "committeeActions": {
+    "newAction": "חדש",
+    "newCommittee": "ועדה חדשה",
+    "newMeeting": "ישיבה חדשה",
+    "standaloneMeeting": "ישיבה עצמאית",
+    "unplannedEvent": "אירוע לא מתוכנן"
+  },
+  "meetings": {
+    "title": "ישיבות",
+    "empty": "לא נמצאו ישיבות.",
+    "all": "הכל",
+    "titleCol": "כותרת",
+    "committee": "ועדה",
+    "date": "תאריך",
+    "status": "סטטוס",
+    "decisions": "החלטות"
+  },
+  "meetingDetail": {
+    "backLink": "ישיבות",
+    "decisionsTitle": "החלטות",
+    "noDecisions": "אין החלטות עדיין.",
+    "assignedTo": "הוקצה ל",
+    "detailsTitle": "פרטים",
+    "createdByLabel": "נוצר על ידי",
+    "createdLabel": "נוצר",
+    "minutesTitle": "פרוטוקול",
+    "noMinutes": "טרם נרשם פרוטוקול."
+  },
+  "decisions": {
+    "title": "החלטות",
+    "empty": "לא נמצאו החלטות.",
+    "all": "הכל",
+    "titleCol": "כותרת",
+    "meeting": "ישיבה",
+    "status": "סטטוס",
+    "assignee": "אחראי",
+    "dueDate": "תאריך יעד"
+  },
+  "decisionDetail": {
+    "backLink": "החלטות",
+    "from": "מ:",
+    "descriptionTitle": "תיאור",
+    "detailsTitle": "פרטים",
+    "assigneeLabel": "אחראי",
+    "unassigned": "לא הוקצה",
+    "dueDateLabel": "תאריך יעד",
+    "notSet": "לא נקבע",
+    "createdByLabel": "נוצר על ידי",
+    "closedAtLabel": "נסגר בתאריך",
+    "timelineTitle": "ציר זמן",
+    "createdLabel": "נוצר",
+    "lastUpdatedLabel": "עודכן לאחרונה"
+  },
+  "createCommittee": {
+    "trigger": "ועדה חדשה",
+    "dialogTitle": "יצירת ועדה",
+    "nameLabel": "שם",
+    "descriptionLabel": "תיאור",
+    "submit": "יצירה",
+    "submitting": "יוצר..."
+  },
+  "createMeeting": {
+    "trigger": "ישיבה חדשה",
+    "dialogTitle": "תזמון ישיבה",
+    "titleLabel": "כותרת",
+    "committeeLabel": "ועדה",
+    "committeePlaceholder": "בחר ועדה",
+    "dateLabel": "תאריך ושעה",
+    "endTimeLabel": "שעת סיום",
+    "eventTypeLabel": "סוג",
+    "eventType_MEETING": "ישיבת ועדה",
+    "eventType_STANDALONE_MEETING": "ישיבה עצמאית",
+    "eventType_UNPLANNED_EVENT": "אירוע לא מתוכנן",
+    "participationLabel": "שיטת השתתפות",
+    "participation_PHYSICAL": "פיזית",
+    "participation_TEAMS": "Microsoft Teams",
+    "participation_ZOOM": "Zoom",
+    "participation_WEBEX": "Webex",
+    "participation_HYBRID": "היברידי",
+    "locationLabel": "מיקום",
+    "meetingLinkLabel": "קישור לישיבה",
+    "recurrenceLabel": "חזרה",
+    "recurrence_NONE": "ללא",
+    "recurrence_DAILY": "יומי",
+    "recurrence_WEEKLY": "שבועי",
+    "recurrence_BIWEEKLY": "דו-שבועי",
+    "recurrence_MONTHLY": "חודשי",
+    "membersLabel": "משתתפים",
+    "membersPlaceholder": "בחר משתתפים",
+    "aiTranscription": "הפעל תמלול AI",
+    "aiTranscriptionDesc": "תכונה פרימיום",
+    "attachmentsLabel": "קבצים מצורפים",
+    "submit": "יצירה",
+    "submitting": "יוצר..."
+  },
+  "createDecision": {
+    "trigger": "הוסף החלטה",
+    "dialogTitle": "יצירת החלטה",
+    "titleLabel": "כותרת",
+    "descriptionLabel": "תיאור",
+    "dueDateLabel": "תאריך יעד",
+    "submit": "יצירה",
+    "submitting": "יוצר..."
+  },
+  "calendar": {
+    "title": "לוח שנה",
+    "today": "היום",
+    "month": "חודש",
+    "week": "שבוע",
+    "day": "יום",
+    "COMMITTEE": "ועדה",
+    "MEETING": "ישיבה",
+    "STANDALONE_MEETING": "ישיבה עצמאית",
+    "UNPLANNED_EVENT": "אירוע לא מתוכנן"
+  },
+  "calendarEvent": {
+    "COMMITTEE": "ועדה",
+    "MEETING": "ישיבה",
+    "STANDALONE_MEETING": "ישיבה עצמאית",
+    "UNPLANNED_EVENT": "אירוע לא מתוכנן",
+    "joinLink": "הצטרף לישיבה",
+    "viewDetails": "צפה בפרטים"
+  },
+  "calendarSync": {
+    "syncCalendar": "סנכרון לוח שנה",
+    "title": "סנכרון לוח שנה",
+    "description": "חבר את לוח השנה החיצוני שלך לסנכרון אוטומטי.",
+    "outlook": "Microsoft Outlook",
+    "gmail": "Google Calendar",
+    "comingSoon": "בקרוב"
+  },
+  "reports": {
+    "title": "דוחות",
+    "subtitle": "ניתוחים ותובנות לפעילות הממשל.",
+    "meetingSummary": "סיכום ישיבות",
+    "meetingSummaryDesc": "סקירה של כל הישיבות ותוצאותיהן.",
+    "decisionTracking": "מעקב החלטות",
+    "decisionTrackingDesc": "מעקב אחר סטטוס החלטות ומטלות.",
+    "attendanceReport": "דוח נוכחות",
+    "attendanceReportDesc": "השתתפות חברים בישיבות.",
+    "committeeDashboard": "לוח בקרה לוועדות",
+    "committeeDashboardDesc": "מדדי פעילות לכל ועדה.",
+    "comingSoon": "בקרוב"
+  },
+  "organization": {
+    "title": "ארגון",
+    "admin": "מנהל",
+    "details": "פרטים",
+    "name": "שם",
+    "slug": "מזהה",
+    "features": "תכונות",
+    "feature_committeeManagement": "ניהול ועדות וישיבות",
+    "feature_smartMinutes": "פרוטוקולים חכמים",
+    "feature_voiceAiTranscription": "תמלול קולי AI",
+    "enabled": "מופעל",
+    "disabled": "מושבת"
+  },
+  "settings": {
+    "title": "הגדרות",
+    "profile": "פרופיל",
+    "nameLabel": "שם",
+    "emailLabel": "אימייל",
+    "roleLabel": "תפקיד",
+    "photo": "תמונת פרופיל",
+    "preferences": "העדפות",
+    "language": "שפה"
+  },
+  "meetingStatuses": {
+    "SCHEDULED": "מתוכננת",
+    "IN_PROGRESS": "בתהליך",
+    "COMPLETED": "הושלמה",
+    "CANCELLED": "בוטלה"
+  },
+  "decisionStatuses": {
+    "OPEN": "פתוחה",
+    "IN_PROGRESS": "בתהליך",
+    "COMPLETED": "הושלמה",
+    "DEFERRED": "נדחתה"
+  },
+  "meetingActions": {
+    "startMeeting": "התחל ישיבה",
+    "complete": "השלם",
+    "cancel": "בטל"
+  },
+  "decisionActions": {
+    "start": "התחל",
+    "complete": "השלם",
+    "defer": "דחה",
+    "reopen": "פתח מחדש",
+    "reactivate": "הפעל מחדש"
+  }
+}

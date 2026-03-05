@@ -1,0 +1,280 @@
+{
+  "login": {
+    "title": "Sign in to GovCore",
+    "subtitle": "AI-Powered Governance Platform",
+    "error": "Invalid credentials.",
+    "identifierLabel": "Email or Phone",
+    "identifierPlaceholder": "admin@govcore.local / 0501234567",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "tagline": "Committees \u00b7 Meetings \u00b7 Decisions \u00b7 AI"
+  },
+  "sidebar": {
+    "appName": "GovCore",
+    "dashboard": "Dashboard",
+    "committees": "Committees",
+    "calendar": "Calendar",
+    "reports": "Reports",
+    "organization": "Organization",
+    "settings": "Settings"
+  },
+  "header": {
+    "title": "GovCore",
+    "notifications": "Notifications"
+  },
+  "orgSwitcher": {
+    "switchOrganization": "Switch Organization"
+  },
+  "userMenu": {
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "adminBadge": "Admin",
+    "admin": "Administrator",
+    "secretary": "Secretary",
+    "member": "Member"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {name}",
+    "subtitle": "Here's your governance overview",
+    "quickActions": "Quick Actions",
+    "committees": "Committees",
+    "upcomingMeetings": "Upcoming Meetings",
+    "openDecisions": "Open Decisions",
+    "recentMeetings": "Recent Meetings",
+    "noMeetings": "No meetings yet.",
+    "noOpenDecisions": "No open decisions.",
+    "due": "Due",
+    "weeklyOverview": "Weekly Overview",
+    "thisWeek": "This Week",
+    "upcomingCommittees": "Committees This Week",
+    "upcomingMeetings": "Upcoming Meetings",
+    "unplannedEvents": "Unplanned Events",
+    "noWeeklyItems": "No meetings scheduled this week.",
+    "documents": "Documents",
+    "sharedWithMe": "Shared With Me",
+    "myDocuments": "My Documents",
+    "voiceRecordings": "Voice Recordings",
+    "noDocuments": "No documents yet.",
+    "share": "Share",
+    "edit": "Edit",
+    "download": "Download",
+    "delete": "Delete",
+    "adminControl": "Admin Control Panel",
+    "manageUsers": "Manage Users",
+    "assignRoles": "Assign Roles",
+    "manageCommittees": "Manage Committees",
+    "manageMeetings": "Manage Meetings",
+    "managePermissions": "Manage Permissions",
+    "systemSettings": "System Settings"
+  },
+  "committees": {
+    "title": "Committees",
+    "empty": "No committees yet. Create one to get started.",
+    "name": "Name",
+    "members": "Members",
+    "meetings": "Meetings"
+  },
+  "committeeDetail": {
+    "backLink": "Committees",
+    "membersTitle": "Members",
+    "detailsTitle": "Details",
+    "meetingsLabel": "Meetings",
+    "createdLabel": "Created",
+    "noMembers": "No members yet."
+  },
+  "committeeActions": {
+    "newAction": "New",
+    "newCommittee": "New Committee",
+    "newMeeting": "New Meeting",
+    "standaloneMeeting": "Standalone Meeting",
+    "unplannedEvent": "Unplanned Event"
+  },
+  "meetings": {
+    "title": "Meetings",
+    "empty": "No meetings found.",
+    "all": "All",
+    "titleCol": "Title",
+    "committee": "Committee",
+    "date": "Date",
+    "status": "Status",
+    "decisions": "Decisions"
+  },
+  "meetingDetail": {
+    "backLink": "Meetings",
+    "decisionsTitle": "Decisions",
+    "noDecisions": "No decisions yet.",
+    "assignedTo": "Assigned to",
+    "detailsTitle": "Details",
+    "createdByLabel": "Created by",
+    "createdLabel": "Created",
+    "minutesTitle": "Minutes",
+    "noMinutes": "No minutes recorded yet."
+  },
+  "decisions": {
+    "title": "Decisions",
+    "empty": "No decisions found.",
+    "all": "All",
+    "titleCol": "Title",
+    "meeting": "Meeting",
+    "status": "Status",
+    "assignee": "Assignee",
+    "dueDate": "Due Date"
+  },
+  "decisionDetail": {
+    "backLink": "Decisions",
+    "from": "From:",
+    "descriptionTitle": "Description",
+    "detailsTitle": "Details",
+    "assigneeLabel": "Assignee",
+    "unassigned": "Unassigned",
+    "dueDateLabel": "Due Date",
+    "notSet": "Not set",
+    "createdByLabel": "Created by",
+    "closedAtLabel": "Closed at",
+    "timelineTitle": "Timeline",
+    "createdLabel": "Created",
+    "lastUpdatedLabel": "Last updated"
+  },
+  "createCommittee": {
+    "trigger": "New Committee",
+    "dialogTitle": "Create Committee",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "submit": "Create",
+    "submitting": "Creating..."
+  },
+  "createMeeting": {
+    "trigger": "New Meeting",
+    "dialogTitle": "Schedule Meeting",
+    "titleLabel": "Title",
+    "committeeLabel": "Committee",
+    "committeePlaceholder": "Select committee",
+    "dateLabel": "Date & Time",
+    "endTimeLabel": "End Time",
+    "eventTypeLabel": "Type",
+    "eventType_MEETING": "Committee Meeting",
+    "eventType_STANDALONE_MEETING": "Standalone Meeting",
+    "eventType_UNPLANNED_EVENT": "Unplanned Event",
+    "participationLabel": "Participation Method",
+    "participation_PHYSICAL": "Physical",
+    "participation_TEAMS": "Microsoft Teams",
+    "participation_ZOOM": "Zoom",
+    "participation_WEBEX": "Webex",
+    "participation_HYBRID": "Hybrid",
+    "locationLabel": "Location",
+    "meetingLinkLabel": "Meeting Link",
+    "recurrenceLabel": "Recurrence",
+    "recurrence_NONE": "None",
+    "recurrence_DAILY": "Daily",
+    "recurrence_WEEKLY": "Weekly",
+    "recurrence_BIWEEKLY": "Every Two Weeks",
+    "recurrence_MONTHLY": "Monthly",
+    "membersLabel": "Members",
+    "membersPlaceholder": "Select members",
+    "aiTranscription": "Enable AI Transcription",
+    "aiTranscriptionDesc": "Premium feature",
+    "attachmentsLabel": "Attachments",
+    "submit": "Create",
+    "submitting": "Creating..."
+  },
+  "createDecision": {
+    "trigger": "Add Decision",
+    "dialogTitle": "Create Decision",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "dueDateLabel": "Due Date",
+    "submit": "Create",
+    "submitting": "Creating..."
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "COMMITTEE": "Committee",
+    "MEETING": "Meeting",
+    "STANDALONE_MEETING": "Standalone Meeting",
+    "UNPLANNED_EVENT": "Unplanned Event"
+  },
+  "calendarEvent": {
+    "COMMITTEE": "Committee",
+    "MEETING": "Meeting",
+    "STANDALONE_MEETING": "Standalone Meeting",
+    "UNPLANNED_EVENT": "Unplanned Event",
+    "joinLink": "Join Meeting",
+    "viewDetails": "View Details"
+  },
+  "calendarSync": {
+    "syncCalendar": "Sync Calendar",
+    "title": "Calendar Sync",
+    "description": "Connect your external calendar to sync events automatically.",
+    "outlook": "Microsoft Outlook",
+    "gmail": "Google Calendar",
+    "comingSoon": "Coming Soon"
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Analytics and insights for your governance activities.",
+    "meetingSummary": "Meeting Summary",
+    "meetingSummaryDesc": "Overview of all meetings and their outcomes.",
+    "decisionTracking": "Decision Tracking",
+    "decisionTrackingDesc": "Track decision status and follow-ups.",
+    "attendanceReport": "Attendance Report",
+    "attendanceReportDesc": "Member participation across meetings.",
+    "committeeDashboard": "Committee Dashboard",
+    "committeeDashboardDesc": "Activity metrics per committee.",
+    "comingSoon": "Coming Soon"
+  },
+  "organization": {
+    "title": "Organization",
+    "admin": "Admin",
+    "details": "Details",
+    "name": "Name",
+    "slug": "Slug",
+    "features": "Feature Toggles",
+    "feature_committeeManagement": "Committee & Meeting Management",
+    "feature_smartMinutes": "Smart Minutes",
+    "feature_voiceAiTranscription": "Voice AI Transcription",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "roleLabel": "Role",
+    "photo": "Profile Photo",
+    "preferences": "Preferences",
+    "language": "Language"
+  },
+  "meetingStatuses": {
+    "SCHEDULED": "Scheduled",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled"
+  },
+  "decisionStatuses": {
+    "OPEN": "Open",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "DEFERRED": "Deferred"
+  },
+  "meetingActions": {
+    "startMeeting": "Start Meeting",
+    "complete": "Complete",
+    "cancel": "Cancel"
+  },
+  "decisionActions": {
+    "start": "Start",
+    "complete": "Complete",
+    "defer": "Defer",
+    "reopen": "Reopen",
+    "reactivate": "Reactivate"
+  }
+}

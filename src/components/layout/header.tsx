@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react";
 import { OrgSwitcher } from "./org-switcher";
 import { UserMenu } from "./user-menu";
 import { Button } from "@/components/ui/button";
-import { Bell } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
+import Link from "next/link";
 
 export function Header() {
   const { data: session } = useSession();
@@ -12,12 +13,17 @@ export function Header() {
   if (!session) return null;
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b px-6">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b px-6 bg-background">
       <OrgSwitcher currentOrgId={session.user.orgId} />
 
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon">
           <Bell className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/settings">
+            <Settings className="h-4 w-4" />
+          </Link>
         </Button>
         <UserMenu />
       </div>

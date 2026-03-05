@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { SessionProvider } from "@/components/layout/session-provider";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
-import { AiKeyframesStyle, AiBackground } from "@/components/ai/ai-background";
 
 export default async function DashboardLayout({
   children,
@@ -18,18 +17,14 @@ export default async function DashboardLayout({
   }
 
   return (
-    <>
-      <AiKeyframesStyle />
-      <AiBackground variant="subtle" />
-      <SessionProvider>
-        <div className="flex h-screen">
-          <Sidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Header />
-            <main className="flex-1 overflow-y-auto p-8">{children}</main>
-          </div>
+    <SessionProvider>
+      <div className="flex h-screen bg-background">
+        <Sidebar />
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <Header />
+          <main className="flex-1 overflow-y-auto p-8">{children}</main>
         </div>
-      </SessionProvider>
-    </>
+      </div>
+    </SessionProvider>
   );
 }

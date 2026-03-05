@@ -107,7 +107,7 @@ export default async function DashboardPage() {
   ] as const;
 
   return (
-    <div className="space-y-8 relative z-10">
+    <div className="space-y-8">
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold">

@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 
 function getWeekBounds() {
   const now = new Date();
-  const dayOfWeek = now.getDay(); // 0=Sun
+  const dayOfWeek = now.getDay();
   const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const monday = new Date(now);
   monday.setDate(now.getDate() + daysToMonday);
@@ -62,7 +62,6 @@ export default async function DashboardPage() {
 
   const meetings = await listMeetings(orgId);
 
-  // Week bounds
   const { monday, sunday } = getWeekBounds();
 
   const thisWeekMeetings = meetings.filter((m) => {
@@ -74,7 +73,6 @@ export default async function DashboardPage() {
     (m) => m.status === "SCHEDULED" || m.status === "IN_PROGRESS"
   );
 
-  // Unique committees from this week's meetings
   const committeesThisWeek = Array.from(
     new Map(
       thisWeekMeetings
@@ -83,7 +81,6 @@ export default async function DashboardPage() {
     ).values()
   );
 
-  // Build week days array: Mon → Sun
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
@@ -96,40 +93,32 @@ export default async function DashboardPage() {
 
   const today = new Date();
 
-  // Admin tiles
   const adminTiles = [
-    { icon: UserCog, labelKey: "manageUsers", href: "/organization", color: "text-blue-500", bg: "bg-blue-50" },
-    { icon: ShieldCheck, labelKey: "assignRoles", href: "/organization", color: "text-indigo-500", bg: "bg-indigo-50" },
-    { icon: LayoutList, labelKey: "manageCommittees", href: "/committees", color: "text-violet-500", bg: "bg-violet-50" },
-    { icon: ClipboardList, labelKey: "manageMeetings", href: "/meetings", color: "text-purple-500", bg: "bg-purple-50" },
-    { icon: Lock, labelKey: "managePermissions", href: "/organization", color: "text-blue-500", bg: "bg-blue-50" },
-    { icon: Settings, labelKey: "systemSettings", href: "/settings", color: "text-slate-500", bg: "bg-slate-100" },
+    { icon: UserCog,      labelKey: "manageUsers",       href: "/organization", color: "text-blue-500",   bg: "bg-blue-50" },
+    { icon: ShieldCheck,  labelKey: "assignRoles",        href: "/organization", color: "text-indigo-500", bg: "bg-indigo-50" },
+    { icon: LayoutList,   labelKey: "manageCommittees",   href: "/committees",   color: "text-violet-500", bg: "bg-violet-50" },
+    { icon: ClipboardList,labelKey: "manageMeetings",     href: "/meetings",     color: "text-purple-500", bg: "bg-purple-50" },
+    { icon: Lock,         labelKey: "managePermissions",  href: "/organization", color: "text-blue-500",   bg: "bg-blue-50" },
+    { icon: Settings,     labelKey: "systemSettings",     href: "/settings",     color: "text-slate-500",  bg: "bg-slate-100" },
   ] as const;
 
   return (
-    <div className="relative space-y-8">
+    <div className="space-y-8">
 
-      {/* ── AI ambient glow — decorative only ── */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: -1 }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(600px circle at 70% 20%, rgba(99,102,241,0.08), transparent 60%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(400px circle at 15% 80%, rgba(139,92,246,0.06), transparent 55%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(300px circle at 50% 50%, rgba(59,130,246,0.04), transparent 60%)" }} />
-      </div>
-
-      {/* Page header */}
+      {/* Page header — on dark canvas */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-white">
           {t("welcome", { name: session.user.name || "" })}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+        <p className="text-sm text-slate-400 mt-1">{t("subtitle")}</p>
       </div>
 
       {/* ── Section A: Weekly Overview ─────────────────────────────── */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("weeklyOverview")}</h2>
+        <h2 className="text-lg font-semibold text-white mb-4">{t("weeklyOverview")}</h2>
 
         {/* Mini week calendar */}
-        <Card className="mb-4 rounded-xl border-gray-200 shadow-sm card-enter">
+        <Card className="glass-card mb-4 card-enter">
           <CardContent className="pt-4">
             <p className="text-xs text-gray-400 mb-3 font-medium uppercase tracking-wide">
               {t("thisWeek")}
@@ -144,29 +133,19 @@ export default async function DashboardPage() {
                   <div
                     key={i}
                     className={cn(
-                      "flex flex-col items-center py-2 px-1 rounded-lg text-center transition-colors",
-                      isToday
-                        ? "bg-blue-50 ring-1 ring-blue-200"
-                        : "hover:bg-slate-50"
+                      "flex flex-col items-center py-2 px-1 rounded-xl text-center transition-colors",
+                      isToday ? "bg-indigo-50 ring-1 ring-indigo-200" : "hover:bg-gray-50"
                     )}
                   >
                     <span className="text-[10px] font-medium text-gray-400 uppercase">
                       {dayLabels[i]}
                     </span>
-                    <span
-                      className={cn(
-                        "text-sm font-semibold mt-0.5",
-                        isToday ? "text-blue-600" : "text-gray-700"
-                      )}
-                    >
+                    <span className={cn("text-sm font-semibold mt-0.5", isToday ? "text-indigo-600" : "text-gray-700")}>
                       {day.getDate()}
                     </span>
                     <div className="h-1.5 mt-1 flex items-center justify-center">
                       {hasMeeting && (
-                        <div className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          isToday ? "bg-blue-500" : "bg-indigo-400"
-                        )} />
+                        <div className={cn("w-1.5 h-1.5 rounded-full", isToday ? "bg-indigo-500" : "bg-indigo-400")} />
                       )}
                     </div>
                   </div>
@@ -178,7 +157,7 @@ export default async function DashboardPage() {
 
         {/* Stats row */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.05s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.05s" }}>
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
@@ -190,13 +169,13 @@ export default async function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">{committeesThisWeek.length}</div>
+              <div className="text-2xl font-semibold text-indigo-600">{committeesThisWeek.length}</div>
               <div className="mt-2 space-y-1">
                 {committeesThisWeek.slice(0, 3).map((c) => (
                   <Link
                     key={c.id}
                     href={`/committees/${c.id}`}
-                    className="block text-xs text-gray-400 hover:text-blue-600 truncate transition-colors"
+                    className="block text-xs text-gray-400 hover:text-indigo-600 truncate transition-colors"
                   >
                     {c.name}
                   </Link>
@@ -205,7 +184,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.10s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.10s" }}>
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50">
@@ -217,13 +196,13 @@ export default async function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">{upcomingThisWeek.length}</div>
+              <div className="text-2xl font-semibold text-indigo-600">{upcomingThisWeek.length}</div>
               <div className="mt-2 space-y-1">
                 {upcomingThisWeek.slice(0, 3).map((m) => (
                   <Link
                     key={m.id}
                     href={`/meetings/${m.id}`}
-                    className="block text-xs text-gray-400 hover:text-blue-600 truncate transition-colors"
+                    className="block text-xs text-gray-400 hover:text-indigo-600 truncate transition-colors"
                   >
                     {m.title} &middot;{" "}
                     {new Date(m.scheduledAt).toLocaleDateString(locale, {
@@ -240,7 +219,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.15s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.15s" }}>
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
@@ -252,7 +231,7 @@ export default async function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">0</div>
+              <div className="text-2xl font-semibold text-indigo-600">0</div>
               <p className="mt-2 text-xs text-gray-400">{t("noWeeklyItems")}</p>
             </CardContent>
           </Card>
@@ -261,10 +240,9 @@ export default async function DashboardPage() {
 
       {/* ── Section B: Documents ───────────────────────────────────── */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("documents")}</h2>
+        <h2 className="text-lg font-semibold text-white mb-4">{t("documents")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          {/* Shared Documents */}
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.20s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.20s" }}>
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50">
@@ -284,8 +262,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* My Documents */}
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.25s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.25s" }}>
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
@@ -313,8 +290,7 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Voice Recordings */}
-          <Card className="rounded-xl border-gray-200 shadow-sm hover:shadow-md transition-all duration-150 card-enter" style={{ animationDelay: "0.30s" }}>
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.30s" }}>
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
@@ -339,12 +315,12 @@ export default async function DashboardPage() {
       {/* ── Section C: Admin Control Panel ────────────────────────── */}
       {isAdmin && (
         <section>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("adminControl")}</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">{t("adminControl")}</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {adminTiles.map(({ icon: Icon, labelKey, href, color, bg }, idx) => (
               <Link key={labelKey} href={href}>
                 <Card
-                  className="rounded-xl border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 cursor-pointer card-enter"
+                  className="glass-card cursor-pointer card-enter"
                   style={{ animationDelay: `${0.35 + idx * 0.05}s` }}
                 >
                   <CardContent className="flex items-center gap-3 p-4">

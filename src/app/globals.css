@@ -49,36 +49,36 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.98 0.005 264);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.546 0.245 264);
+  --background: oklch(0.12 0.03 240);        /* #0F172A deep navy */
+  --foreground: oklch(0.94 0.01 240);         /* near-white */
+  --card: oklch(1 0 0);                       /* white — glass effect via .glass-card */
+  --card-foreground: oklch(0.145 0 0);        /* dark text inside cards */
+  --popover: oklch(0.16 0.03 240);
+  --popover-foreground: oklch(0.94 0.01 240);
+  --primary: oklch(0.546 0.245 264);          /* indigo-600 */
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.94 0.02 264);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.95 0.01 264);
-  --muted-foreground: oklch(0.48 0.02 264);
-  --accent: oklch(0.93 0.04 264);
-  --accent-foreground: oklch(0.25 0.05 264);
+  --secondary: oklch(0.18 0.02 240);
+  --secondary-foreground: oklch(0.94 0.01 240);
+  --muted: oklch(0.18 0.02 240);
+  --muted-foreground: oklch(0.60 0.02 240);
+  --accent: oklch(0.20 0.04 264);
+  --accent-foreground: oklch(0.80 0.08 264);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.90 0.02 264);
-  --input: oklch(0.90 0.02 264);
+  --border: oklch(0.24 0.02 240);
+  --input: oklch(0.22 0.03 240);
   --ring: oklch(0.546 0.245 264);
   --chart-1: oklch(0.546 0.245 264);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.646 0.222 41.116);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.975 0.008 264);
-  --sidebar-foreground: oklch(0.2 0.02 264);
-  --sidebar-primary: oklch(0.546 0.245 264);
+  --sidebar: oklch(0.09 0.028 240);           /* #0B1220 */
+  --sidebar-foreground: oklch(0.78 0.02 240);
+  --sidebar-primary: oklch(0.65 0.18 265);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.92 0.04 264);
-  --sidebar-accent-foreground: oklch(0.25 0.05 264);
-  --sidebar-border: oklch(0.88 0.025 264);
+  --sidebar-accent: oklch(0.65 0.18 265 / 0.12);
+  --sidebar-accent-foreground: oklch(0.72 0.16 265);
+  --sidebar-border: oklch(0.18 0.02 240);
   --sidebar-ring: oklch(0.546 0.245 264);
 }
 
@@ -126,11 +126,26 @@
 }
 
 @keyframes cardFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .card-enter {
-  animation: cardFadeIn 0.25s ease-out both;
+  animation: cardFadeIn 0.3s ease-out both;
+}
+
+/* Floating glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.15) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+  transition: transform 250ms ease, box-shadow 250ms ease !important;
+}
+.glass-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* FullCalendar dark theme overrides */
@@ -138,7 +153,7 @@
   --fc-border-color: var(--border);
   --fc-button-bg-color: var(--primary);
   --fc-button-text-color: var(--primary-foreground);
-  --fc-today-bg-color: oklch(0.94 0.04 264);
+  --fc-today-bg-color: oklch(0.22 0.06 265);
   --fc-event-text-color: white;
   --fc-page-bg-color: transparent;
   --fc-neutral-bg-color: var(--muted);

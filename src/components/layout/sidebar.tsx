@@ -64,14 +64,14 @@ export function Sidebar() {
               className={cn(
                 "relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150",
                 isActive
-                  ? "bg-blue-50 text-blue-600 shadow-sm"
-                  : "text-gray-600 hover:bg-slate-50 hover:text-gray-900"
+                  ? "bg-indigo-500/10 text-indigo-400"
+                  : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
               )}
             >
               {isActive && (
-                <span className="absolute inset-y-1 end-0 w-0.5 rounded-full bg-blue-500" />
+                <span className="absolute inset-y-1 end-0 w-0.5 rounded-full bg-indigo-400" />
               )}
-              <Icon className={cn("h-4 w-4", isActive ? "text-blue-500" : "text-gray-400")} />
+              <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-indigo-400" : "text-slate-500")} />
               {t(item.labelKey)}
             </Link>
           );

@@ -18,7 +18,15 @@ export default async function DashboardLayout({
 
   return (
     <SessionProvider>
-      <div className="flex h-screen bg-background">
+      {/* ── Fixed deep-navy backdrop + radial glow layers ── */}
+      <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, #0F172A 0%, #111827 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(900px circle at 80% 10%, rgba(59,130,246,0.25), transparent 60%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(700px circle at 20% 80%, rgba(99,102,241,0.20), transparent 65%)" }} />
+      </div>
+
+      {/* ── App shell (structure unchanged) ── */}
+      <div className="relative flex h-screen" style={{ zIndex: 1 }}>
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header />

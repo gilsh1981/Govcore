@@ -3,7 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { db } from "@/lib/db";
 import { listMeetings } from "@/services/meetings";
+import { listCommittees } from "@/services/committees";
+import { GlobalCreateButton } from "@/components/shared/global-create-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,24 +63,26 @@ export default async function DashboardPage() {
   const isAdmin = session.user.role === "ADMIN";
   const orgId = session.user.orgId;
 
-  const meetings = await listMeetings(orgId);
+  const [meetings, committees] = await Promise.all([
+    listMeetings(orgId),
+    listCommittees(orgId),
+  ]);
 
   const { monday, sunday } = getWeekBounds();
 
   const thisWeekMeetings = meetings.filter((m) => {
-    const d = new Date(m.scheduledAt);
+    const d = new Date(m.scheduledStart);
     return d >= monday && d <= sunday;
   });
 
   const upcomingThisWeek = thisWeekMeetings.filter(
-    (m) => m.status === "SCHEDULED" || m.status === "IN_PROGRESS"
+    (m) => m.status === "PLANNED" || m.status === "IN_PROGRESS"
   );
 
   const committeesThisWeek = Array.from(
     new Map(
       thisWeekMeetings
-        .filter((m) => m.committee)
-        .map((m) => [m.committee.id, m.committee])
+        .flatMap((m) => m.committee ? [[m.committee.id, m.committee] as const] : [])
     ).values()
   );
 
@@ -93,29 +98,54 @@ export default async function DashboardPage() {
 
   const today = new Date();
 
+  // ── Governance data ───────────────────────────────────────────────────────
+
+  const pendingDecisions = await db.decision.findMany({
+    where: { organizationId: orgId, status: "PROPOSED", deletedAt: null },
+    include: { meeting: { select: { id: true, title: true } } },
+    orderBy: { createdAt: "asc" },
+    take: 5,
+  });
+
+  const myTasks = await db.task.findMany({
+    where: {
+      organizationId: orgId,
+      assignedToId: session.user.id,
+      status: { in: ["OPEN", "IN_PROGRESS", "BLOCKED"] },
+      deletedAt: null,
+    },
+    orderBy: [{ priority: "desc" }, { dueDate: "asc" }],
+    take: 5,
+  });
+
   const adminTiles = [
-    { icon: UserCog,      labelKey: "manageUsers",       href: "/organization", color: "text-blue-500",   bg: "bg-blue-50" },
-    { icon: ShieldCheck,  labelKey: "assignRoles",        href: "/organization", color: "text-indigo-500", bg: "bg-indigo-50" },
-    { icon: LayoutList,   labelKey: "manageCommittees",   href: "/committees",   color: "text-violet-500", bg: "bg-violet-50" },
-    { icon: ClipboardList,labelKey: "manageMeetings",     href: "/meetings",     color: "text-purple-500", bg: "bg-purple-50" },
-    { icon: Lock,         labelKey: "managePermissions",  href: "/organization", color: "text-blue-500",   bg: "bg-blue-50" },
-    { icon: Settings,     labelKey: "systemSettings",     href: "/settings",     color: "text-slate-500",  bg: "bg-slate-100" },
+    { icon: UserCog,      labelKey: "manageUsers",       href: "/organization",  color: "text-blue-500",   bg: "bg-blue-50" },
+    { icon: ShieldCheck,  labelKey: "assignRoles",        href: "/permissions",   color: "text-indigo-500", bg: "bg-indigo-50" },
+    { icon: LayoutList,   labelKey: "manageCommittees",   href: "/committees",    color: "text-violet-500", bg: "bg-violet-50" },
+    { icon: ClipboardList,labelKey: "manageMeetings",     href: "/meetings",      color: "text-purple-500", bg: "bg-purple-50" },
+    { icon: Lock,         labelKey: "managePermissions",  href: "/permissions",   color: "text-blue-500",   bg: "bg-blue-50" },
+    { icon: Settings,     labelKey: "systemSettings",     href: "/settings",      color: "text-slate-500",  bg: "bg-slate-100" },
   ] as const;
+
+  const committeeList = committees.map((c) => ({ id: c.id, name: c.name }));
 
   return (
     <div className="space-y-8">
 
-      {/* Page header — on dark canvas */}
-      <div>
-        <h1 className="text-2xl font-semibold text-white">
-          {t("welcome", { name: session.user.name || "" })}
-        </h1>
-        <p className="text-sm text-slate-400 mt-1">{t("subtitle")}</p>
+      {/* Page header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">
+            {t("welcome", { name: session.user.name || "" })}
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">{t("subtitle")}</p>
+        </div>
+        <GlobalCreateButton committees={committeeList} />
       </div>
 
       {/* ── Section A: Weekly Overview ─────────────────────────────── */}
       <section>
-        <h2 className="text-lg font-semibold text-white mb-4">{t("weeklyOverview")}</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("weeklyOverview")}</h2>
 
         {/* Mini week calendar */}
         <Card className="glass-card mb-4 card-enter">
@@ -126,7 +156,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-7 gap-1">
               {weekDays.map((day, i) => {
                 const hasMeeting = thisWeekMeetings.some((m) =>
-                  isSameDay(new Date(m.scheduledAt), day)
+                  isSameDay(new Date(m.scheduledStart), day)
                 );
                 const isToday = isSameDay(day, today);
                 return (
@@ -205,7 +235,7 @@ export default async function DashboardPage() {
                     className="block text-xs text-gray-400 hover:text-indigo-600 truncate transition-colors"
                   >
                     {m.title} &middot;{" "}
-                    {new Date(m.scheduledAt).toLocaleDateString(locale, {
+                    {new Date(m.scheduledStart).toLocaleDateString(locale, {
                       weekday: "short",
                       hour: "2-digit",
                       minute: "2-digit",
@@ -226,13 +256,13 @@ export default async function DashboardPage() {
                   <AlertCircle className="h-4 w-4 text-amber-500" />
                 </div>
                 <CardTitle className="text-sm font-medium text-gray-500">
-                  {t("unplannedEvents")}
+                  {t("pendingDecisions")}
                 </CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-indigo-600">0</div>
-              <p className="mt-2 text-xs text-gray-400">{t("noWeeklyItems")}</p>
+              <div className="text-2xl font-semibold text-amber-600">{pendingDecisions.length}</div>
+              <p className="mt-2 text-xs text-gray-400">{t("pendingApproval")}</p>
             </CardContent>
           </Card>
         </div>
@@ -240,7 +270,7 @@ export default async function DashboardPage() {
 
       {/* ── Section B: Documents ───────────────────────────────────── */}
       <section>
-        <h2 className="text-lg font-semibold text-white mb-4">{t("documents")}</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("documents")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="glass-card card-enter" style={{ animationDelay: "0.20s" }}>
             <CardHeader className="pb-3">
@@ -312,16 +342,111 @@ export default async function DashboardPage() {
         </div>
       </section>
 
+      {/* ── Section D: Governance Activity ────────────────────────── */}
+      <section>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("governanceActivity")}</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+
+          {/* Pending Decisions */}
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.35s" }}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+                  <AlertCircle className="h-4 w-4 text-amber-500" />
+                </div>
+                <CardTitle className="text-sm font-medium text-gray-500">
+                  {t("pendingDecisions")}
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold text-amber-600">{pendingDecisions.length}</div>
+              <div className="mt-2 space-y-2">
+                {pendingDecisions.map((d) => (
+                  <div key={d.id} className="flex items-center justify-between text-xs gap-2">
+                    <Link
+                      href={`/decisions/${d.id}`}
+                      className="text-gray-600 hover:text-amber-600 truncate transition-colors"
+                    >
+                      {d.title}
+                    </Link>
+                    <span className="text-gray-400 shrink-0">{d.meeting.title}</span>
+                  </div>
+                ))}
+                {pendingDecisions.length === 0 && (
+                  <p className="text-xs text-gray-400">{t("noPendingDecisions")}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* My Tasks */}
+          <Card className="glass-card card-enter" style={{ animationDelay: "0.40s" }}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
+                  <ClipboardList className="h-4 w-4 text-blue-500" />
+                </div>
+                <CardTitle className="text-sm font-medium text-gray-500">
+                  {t("myTasks")}
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold text-blue-600">{myTasks.length}</div>
+              <div className="mt-2 space-y-2">
+                {myTasks.map((task) => {
+                  const isOverdue = task.dueDate && task.dueDate < today;
+                  return (
+                    <div key={task.id} className="flex items-start justify-between gap-2 text-xs">
+                      <div className="flex-1 min-w-0">
+                        <span className={cn(
+                          "flex items-center gap-1 truncate",
+                          isOverdue ? "text-red-600 font-medium" : "text-gray-600"
+                        )}>
+                          {isOverdue && <AlertCircle className="h-3 w-3 shrink-0" />}
+                          {task.title}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-end shrink-0 gap-0.5">
+                        <span className={cn(
+                          "px-1.5 py-0.5 rounded text-[10px] font-medium",
+                          task.priority === "CRITICAL" ? "bg-red-100 text-red-700" :
+                          task.priority === "HIGH" ? "bg-orange-100 text-orange-700" :
+                          task.priority === "MEDIUM" ? "bg-blue-100 text-blue-700" :
+                          "bg-gray-100 text-gray-600"
+                        )}>
+                          {task.priority}
+                        </span>
+                        {task.dueDate && (
+                          <span className={cn("text-[10px]", isOverdue ? "text-red-500" : "text-gray-400")}>
+                            {new Date(task.dueDate).toLocaleDateString(locale)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {myTasks.length === 0 && (
+                  <p className="text-xs text-gray-400">{t("noTasks")}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+        </div>
+      </section>
+
       {/* ── Section C: Admin Control Panel ────────────────────────── */}
       {isAdmin && (
         <section>
-          <h2 className="text-lg font-semibold text-white mb-4">{t("adminControl")}</h2>
+          <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("adminControl")}</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {adminTiles.map(({ icon: Icon, labelKey, href, color, bg }, idx) => (
               <Link key={labelKey} href={href}>
                 <Card
                   className="glass-card cursor-pointer card-enter"
-                  style={{ animationDelay: `${0.35 + idx * 0.05}s` }}
+                  style={{ animationDelay: `${0.45 + idx * 0.05}s` }}
                 >
                   <CardContent className="flex items-center gap-3 p-4">
                     <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg", bg)}>

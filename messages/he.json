@@ -69,7 +69,19 @@
     "manageCommittees": "ניהול ועדות",
     "manageMeetings": "ניהול ישיבות",
     "managePermissions": "ניהול הרשאות",
-    "systemSettings": "הגדרות מערכת"
+    "systemSettings": "הגדרות מערכת",
+    "governanceActivity": "פעילות ממשל",
+    "pendingDecisions": "החלטות ממתינות",
+    "pendingApproval": "ממתין לאישור",
+    "myTasks": "המשימות שלי",
+    "openTasks": "משימות פתוחות",
+    "overdueTasks": "באיחור",
+    "recentlyApproved": "אושר לאחרונה",
+    "noTasks": "אין משימות שהוקצו.",
+    "noPendingDecisions": "אין החלטות ממתינות.",
+    "priority": "עדיפות",
+    "overdue": "באיחור",
+    "dueOn": "יעד {date}"
   },
   "committees": {
     "title": "ועדות",
@@ -129,12 +141,9 @@
     "from": "מ:",
     "descriptionTitle": "תיאור",
     "detailsTitle": "פרטים",
-    "assigneeLabel": "אחראי",
-    "unassigned": "לא הוקצה",
-    "dueDateLabel": "תאריך יעד",
-    "notSet": "לא נקבע",
     "createdByLabel": "נוצר על ידי",
-    "closedAtLabel": "נסגר בתאריך",
+    "proposedByLabel": "הוצע על ידי",
+    "approvedByLabel": "אושר על ידי",
     "timelineTitle": "ציר זמן",
     "createdLabel": "נוצר",
     "lastUpdatedLabel": "עודכן לאחרונה"
@@ -254,16 +263,16 @@
     "language": "שפה"
   },
   "meetingStatuses": {
-    "SCHEDULED": "מתוכננת",
+    "PLANNED": "מתוכננת",
     "IN_PROGRESS": "בתהליך",
     "COMPLETED": "הושלמה",
     "CANCELLED": "בוטלה"
   },
   "decisionStatuses": {
-    "OPEN": "פתוחה",
-    "IN_PROGRESS": "בתהליך",
-    "COMPLETED": "הושלמה",
-    "DEFERRED": "נדחתה"
+    "PROPOSED": "מוצעת",
+    "APPROVED": "אושרה",
+    "REJECTED": "נדחתה",
+    "ARCHIVED": "בארכיון"
   },
   "meetingActions": {
     "startMeeting": "התחל ישיבה",
@@ -271,10 +280,8 @@
     "cancel": "בטל"
   },
   "decisionActions": {
-    "start": "התחל",
-    "complete": "השלם",
-    "defer": "דחה",
-    "reopen": "פתח מחדש",
-    "reactivate": "הפעל מחדש"
+    "approve": "אשר",
+    "reject": "דחה",
+    "archive": "העבר לארכיון"
   }
 }

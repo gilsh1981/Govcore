@@ -69,7 +69,19 @@
     "manageCommittees": "Manage Committees",
     "manageMeetings": "Manage Meetings",
     "managePermissions": "Manage Permissions",
-    "systemSettings": "System Settings"
+    "systemSettings": "System Settings",
+    "governanceActivity": "Governance Activity",
+    "pendingDecisions": "Pending Decisions",
+    "pendingApproval": "Awaiting approval",
+    "myTasks": "My Tasks",
+    "openTasks": "Open Tasks",
+    "overdueTasks": "Overdue",
+    "recentlyApproved": "Recently Approved",
+    "noTasks": "No tasks assigned.",
+    "noPendingDecisions": "No pending decisions.",
+    "priority": "Priority",
+    "overdue": "Overdue",
+    "dueOn": "Due {date}"
   },
   "committees": {
     "title": "Committees",
@@ -129,12 +141,9 @@
     "from": "From:",
     "descriptionTitle": "Description",
     "detailsTitle": "Details",
-    "assigneeLabel": "Assignee",
-    "unassigned": "Unassigned",
-    "dueDateLabel": "Due Date",
-    "notSet": "Not set",
     "createdByLabel": "Created by",
-    "closedAtLabel": "Closed at",
+    "proposedByLabel": "Proposed by",
+    "approvedByLabel": "Approved by",
     "timelineTitle": "Timeline",
     "createdLabel": "Created",
     "lastUpdatedLabel": "Last updated"
@@ -254,16 +263,16 @@
     "language": "Language"
   },
   "meetingStatuses": {
-    "SCHEDULED": "Scheduled",
+    "PLANNED": "Planned",
     "IN_PROGRESS": "In Progress",
     "COMPLETED": "Completed",
     "CANCELLED": "Cancelled"
   },
   "decisionStatuses": {
-    "OPEN": "Open",
-    "IN_PROGRESS": "In Progress",
-    "COMPLETED": "Completed",
-    "DEFERRED": "Deferred"
+    "PROPOSED": "Proposed",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "ARCHIVED": "Archived"
   },
   "meetingActions": {
     "startMeeting": "Start Meeting",
@@ -271,10 +280,8 @@
     "cancel": "Cancel"
   },
   "decisionActions": {
-    "start": "Start",
-    "complete": "Complete",
-    "defer": "Defer",
-    "reopen": "Reopen",
-    "reactivate": "Reactivate"
+    "approve": "Approve",
+    "reject": "Reject",
+    "archive": "Archive"
   }
 }

@@ -27,6 +27,7 @@ model Organization {
   documents      Document[]
   syncLogs       SyncLog[]
   roles          Role[]
+  uploadSessions UploadSession[]
 
   @@map("organizations")
 }
@@ -67,6 +68,7 @@ model User {
   statusTransitions    StatusTransition[]
   permissionLogs       PermissionLog[]
   uploadedDocuments    Document[]
+  uploadSessions       UploadSession[]
 
   @@unique([orgId, email])
   @@index([orgId])
@@ -95,14 +97,15 @@ enum UserRole {
 // ─── RBAC ────────────────────────────────────────────────────────────────────
 
 model Role {
-  id          String    @id @default(uuid())
-  orgId       String
-  name        String
-  scope       RoleScope
-  // e.g. ["committee:read","committee:write","meeting:create"]
-  permissions String[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String    @id @default(uuid())
+  orgId        String
+  name         String
+  description  String?
+  scope        RoleScope
+  // Business-oriented capability keys, e.g. ["view_documents","manage_meetings"]
+  permissions  String[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   org         Organization         @relation(fields: [orgId], references: [id])
   assignments UserRoleAssignment[]
@@ -116,6 +119,7 @@ enum RoleScope {
   ORGANIZATION
   COMMITTEE
   MEETING
+  EVENT
 }
 
 model UserRoleAssignment {
@@ -123,7 +127,7 @@ model UserRoleAssignment {
   userId     String
   roleId     String
   scopeType  RoleScope
-  scopeId    String?   // null = applies to entire org scope
+  scopeId    String?   // null = org-level; committeeId / meetingId / eventId otherwise
   assignedAt DateTime  @default(now())
   assignedBy String?   // userId of assigner
 
@@ -423,21 +427,22 @@ model CalendarEvent {
 model Document {
   id            String        @id @default(uuid())
   orgId         String
-  meetingId     String?
+  meetingId     String?       // legacy FK kept for backwards compat; prefer DocumentRelation
   uploadedById  String?
   name          String
   mimeType      String
   storageKey    String        // cloud storage path/key
-  sizeBytes     Int?
+  sizeBytes     BigInt?
   visibility    DocVisibility @default(ORGANIZATION)
   isVoiceRecord Boolean       @default(false)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   deletedAt     DateTime?
 
-  org        Organization @relation(fields: [orgId], references: [id])
-  meeting    Meeting?     @relation(fields: [meetingId], references: [id])
-  uploadedBy User?        @relation(fields: [uploadedById], references: [id])
+  org        Organization       @relation(fields: [orgId], references: [id])
+  meeting    Meeting?           @relation(fields: [meetingId], references: [id])
+  uploadedBy User?              @relation(fields: [uploadedById], references: [id])
+  relations  DocumentRelation[]
 
   @@index([orgId])
   @@index([meetingId])
@@ -450,6 +455,94 @@ enum DocVisibility {
   COMMITTEE
   MEETING
   PRIVATE
+}
+
+// ─── DOCUMENT RELATIONS ──────────────────────────────────────────────────────
+// A document may be linked to multiple entities simultaneously.
+
+model DocumentRelation {
+  id         String             @id @default(uuid())
+  documentId String
+  entityType DocumentEntityType
+  entityId   String
+  createdAt  DateTime           @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, entityType, entityId])
+  @@index([documentId])
+  @@index([entityType, entityId])
+  @@map("document_relations")
+}
+
+enum DocumentEntityType {
+  ORGANIZATION
+  COMMITTEE
+  MEETING
+  EVENT
+  AGENDA_ITEM
+  DECISION
+  TASK
+}
+
+// ─── UPLOAD SESSIONS ─────────────────────────────────────────────────────────
+// Supports chunked / resumable uploads of up to 20 files / 15 GB per session.
+
+model UploadSession {
+  id             String              @id @default(uuid())
+  orgId          String
+  uploadedById   String
+  status         UploadSessionStatus @default(PENDING)
+  totalFiles     Int
+  processedFiles Int                 @default(0)
+  expiresAt      DateTime
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  org        Organization @relation(fields: [orgId], references: [id])
+  uploadedBy User         @relation(fields: [uploadedById], references: [id])
+  files      UploadFile[]
+
+  @@index([orgId])
+  @@index([uploadedById])
+  @@index([status])
+  @@map("upload_sessions")
+}
+
+enum UploadSessionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model UploadFile {
+  id            String           @id @default(uuid())
+  sessionId     String
+  name          String
+  mimeType      String
+  sizeBytes     BigInt?
+  uploadedBytes BigInt           @default(0)
+  status        UploadFileStatus @default(PENDING)
+  storageKey    String?
+  checksum      String?
+  error         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  session UploadSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("upload_files")
+}
+
+enum UploadFileStatus {
+  PENDING
+  UPLOADING
+  PROCESSING
+  COMPLETED
+  FAILED
 }
 
 // ─── PERMISSION LOG ──────────────────────────────────────────────────────────

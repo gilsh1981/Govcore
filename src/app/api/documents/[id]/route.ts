@@ -25,7 +25,11 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
 
   const document = await db.document.findFirst({
     where: { id, orgId: session.user.orgId, deletedAt: null },
-    include: { uploadedBy: { select: { id: true, name: true, displayName: true } }, meeting: { select: { id: true, title: true } } },
+    include: {
+      uploadedBy: { select: { id: true, name: true, displayName: true } },
+      meeting: { select: { id: true, title: true } },
+      relations: true,
+    },
   });
 
   if (!document) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -50,10 +54,27 @@ export async function PATCH(req: NextRequest, ctx: RouteContext) {
   const parsed = updateDocumentSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Validation error", issues: parsed.error.issues }, { status: 422 });
 
-  const result = await db.document.updateMany({ where: { id, orgId: session.user.orgId, deletedAt: null }, data: parsed.data });
-  if (result.count === 0) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const { relations, ...docData } = parsed.data;
 
-  const updated = await db.document.findUnique({ where: { id } });
+  // Verify doc exists in this org
+  const existing = await db.document.findFirst({ where: { id, orgId: session.user.orgId, deletedAt: null } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const updated = await db.document.update({
+    where: { id },
+    data: {
+      ...docData,
+      ...(relations !== undefined
+        ? {
+            relations: {
+              deleteMany: {},
+              create: relations,
+            },
+          }
+        : {}),
+    },
+    include: { relations: true },
+  });
   return NextResponse.json(updated);
 }
 

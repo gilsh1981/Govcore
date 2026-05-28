@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { requirePermission, PermissionDeniedError } from "@/lib/permissions";
-import type { Action } from "@/lib/validators/roles";
 import { transitionDecisionSchema } from "@/lib/validators/decisions";
 import { transitionDecisionStatus, WorkflowError, WorkflowPermissionError } from "@/services/decisions";
 
@@ -25,7 +24,7 @@ export async function PATCH(req: NextRequest, ctx: RouteContext) {
 
   const { status } = parsed.data;
 
-  const actionMap: Record<string, Action> = {
+  const actionMap: Record<string, string> = {
     APPROVED: "decision:approve",
     REJECTED: "decision:reject",
     ARCHIVED: "decision:archive",

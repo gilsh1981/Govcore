@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import {
   LayoutDashboard,
@@ -14,75 +13,121 @@ import {
   Building2,
   Settings,
   ShieldCheck,
+  CalendarDays,
+  CheckSquare,
 } from "lucide-react";
 
-type LucideIcon = typeof LayoutDashboard;
+const NAV_ITEMS = [
+  { href: "/dashboard",    labelKey: "dashboard",    icon: LayoutDashboard },
+  { href: "/committees",   labelKey: "committees",   icon: Users },
+  { href: "/meetings",     labelKey: "meetings",     icon: CalendarDays },
+  { href: "/decisions",    labelKey: "decisions",    icon: CheckSquare },
+  { href: "/calendar",     labelKey: "calendar",     icon: Calendar },
+  { href: "/reports",      labelKey: "reports",      icon: BarChart3 },
+] as const;
 
-interface NavItem {
+const BOTTOM_ITEMS = [
+  { href: "/organization", labelKey: "organization", icon: Building2 },
+  { href: "/permissions",  labelKey: "permissions",  icon: ShieldCheck },
+  { href: "/settings",     labelKey: "settings",     icon: Settings },
+] as const;
+
+type NavItemProps = {
   href: string;
   labelKey: string;
-  icon: LucideIcon;
-  label?: string;
+  icon: typeof LayoutDashboard;
+  active: boolean;
+  label: string;
+};
+
+function NavLink({ href, icon: Icon, active, label }: NavItemProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-100",
+        active
+          ? "bg-indigo-50 text-indigo-700"
+          : "text-slate-500 hover:bg-slate-50 hover:text-slate-800",
+      )}
+    >
+      {/* Active pill on the inner edge — end-0 = right in LTR, left in RTL */}
+      {active && (
+        <span className="absolute inset-y-2 end-0 w-[3px] rounded-full bg-indigo-600" />
+      )}
+      <Icon
+        className={cn(
+          "h-[15px] w-[15px] shrink-0 transition-colors",
+          active ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600",
+        )}
+      />
+      <span>{label}</span>
+    </Link>
+  );
 }
 
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("sidebar");
 
-  const navItems: NavItem[] = [
-    { href: "/dashboard",    label: "Dashboard",    labelKey: "dashboard",    icon: LayoutDashboard },
-    { href: "/committees",   label: "Committees",   labelKey: "committees",   icon: Users },
-    { href: "/calendar",     label: "Calendar",     labelKey: "calendar",     icon: Calendar },
-    { href: "/reports",      label: "Reports",      labelKey: "reports",      icon: BarChart3 },
-    { href: "/organization", label: "Organization", labelKey: "organization", icon: Building2 },
-    { href: "/permissions",  label: "Permissions",  labelKey: "permissions",  icon: ShieldCheck },
-    { href: "/settings",     label: "Settings",     labelKey: "settings",     icon: Settings },
-  ];
+  function isActive(href: string) {
+    return href === "/dashboard"
+      ? pathname === "/dashboard"
+      : pathname.startsWith(href);
+  }
 
   return (
-    <aside className="flex h-full w-64 flex-col border-e bg-sidebar text-sidebar-foreground shadow-sm">
-      <div className="p-6">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-white">
-              <path strokeLinecap="round" strokeLinejoin="round"
-                d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
-            </svg>
-          </div>
-          <h1 className="text-lg font-semibold tracking-tight text-slate-800">{t("appName")}</h1>
+    <aside className="flex h-full w-[220px] shrink-0 flex-col border-e border-slate-200/80 bg-white/95 backdrop-blur-sm">
+
+      {/* Brand */}
+      <div className="flex h-[60px] shrink-0 items-center gap-2.5 border-b border-slate-100 px-5">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-indigo-600">
+          <svg
+            width="14" height="14"
+            fill="none" viewBox="0 0 24 24"
+            strokeWidth={1.5} stroke="currentColor"
+            className="text-white"
+          >
+            <path
+              strokeLinecap="round" strokeLinejoin="round"
+              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"
+            />
+          </svg>
         </div>
+        <span className="text-[15px] font-semibold tracking-tight text-slate-800">
+          {t("appName")}
+        </span>
       </div>
-      <Separator />
-      <nav className="flex-1 p-4 space-y-0.5">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                isActive
-                  ? "bg-indigo-50 text-indigo-700"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-              )}
-            >
-              {isActive && (
-                <span className="absolute inset-y-1.5 end-0 w-0.5 rounded-full bg-indigo-600" />
-              )}
-              <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-indigo-600" : "text-slate-400")} />
-              {item.label}
-            </Link>
-          );
-        })}
+
+      {/* Primary nav */}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+        {NAV_ITEMS.map(({ href, labelKey, icon }) => (
+          <NavLink
+            key={href}
+            href={href}
+            labelKey={labelKey}
+            icon={icon}
+            active={isActive(href)}
+            label={t(labelKey)}
+          />
+        ))}
       </nav>
-      <Separator />
-      <div className="p-4">
-        <LanguageToggle />
+
+      {/* Bottom: org / permissions / settings + language */}
+      <div className="shrink-0 border-t border-slate-100 px-3 py-3 space-y-0.5">
+        {BOTTOM_ITEMS.map(({ href, labelKey, icon }) => (
+          <NavLink
+            key={href}
+            href={href}
+            labelKey={labelKey}
+            icon={icon}
+            active={isActive(href)}
+            label={t(labelKey)}
+          />
+        ))}
+        <div className="pt-2">
+          <LanguageToggle />
+        </div>
       </div>
     </aside>
   );

@@ -2,11 +2,27 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { RoleAssignPanel } from "@/components/permissions/role-assign-panel";
-import { Shield, Users, Building2 } from "lucide-react";
+import { Shield, Users, Building2, ChevronRight } from "lucide-react";
+import { CAPABILITY_CATEGORIES } from "@/lib/validators/roles";
+import { PermissionsClient } from "@/components/permissions/permissions-client";
+
+// Build a lookup for capability display labels
+const CAPABILITY_LABELS: Record<string, string> = {};
+CAPABILITY_CATEGORIES.forEach((cat) => {
+  cat.items.forEach((item) => {
+    CAPABILITY_LABELS[item.key] = item.label;
+  });
+});
+
+const SCOPE_STYLES: Record<string, { label: string; className: string }> = {
+  ORGANIZATION: { label: "Organization",  className: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  COMMITTEE:    { label: "Committee",     className: "bg-violet-50 text-violet-700 border-violet-200" },
+  MEETING:      { label: "Meeting",       className: "bg-sky-50    text-sky-700    border-sky-200"    },
+  EVENT:        { label: "Event",         className: "bg-amber-50  text-amber-700  border-amber-200"  },
+};
 
 export default async function PermissionsPage() {
   const session = await getServerSession(authOptions);
@@ -19,15 +35,19 @@ export default async function PermissionsPage() {
     db.user.findMany({
       where: { orgId, deletedAt: null },
       select: {
-        id: true, name: true, email: true, role: true, displayName: true,
+        id: true, name: true, email: true, displayName: true, role: true,
         roleAssignments: {
-          include: { role: { select: { id: true, name: true, scope: true } } },
+          include: {
+            role: { select: { id: true, name: true, scope: true, description: true } },
+          },
+          orderBy: { assignedAt: "asc" },
         },
       },
       orderBy: { name: "asc" },
     }),
     db.role.findMany({
       where: { orgId },
+      include: { _count: { select: { assignments: true } } },
       orderBy: [{ scope: "asc" }, { name: "asc" }],
     }),
     db.committee.findMany({
@@ -37,121 +57,69 @@ export default async function PermissionsPage() {
     }),
   ]);
 
-  const rolesByScope = {
-    ORGANIZATION: roles.filter((r) => r.scope === "ORGANIZATION"),
-    COMMITTEE: roles.filter((r) => r.scope === "COMMITTEE"),
-    MEETING: roles.filter((r) => r.scope === "MEETING"),
-  };
+  // Build committee name lookup for rendering scope labels
+  const committeeMap = Object.fromEntries(committees.map((c) => [c.id, c.name]));
+
+  const serializedUsers = users.map((u) => ({
+    id: u.id,
+    name: u.name ?? u.displayName ?? u.email,
+    email: u.email,
+    systemRole: u.role,
+    assignments: u.roleAssignments.map((ra) => ({
+      id: ra.id,
+      roleId: ra.roleId,
+      roleName: ra.role.name,
+      scopeType: ra.scopeType,
+      scopeId: ra.scopeId,
+      scopeLabel: ra.scopeId ? (committeeMap[ra.scopeId] ?? ra.scopeId) : undefined,
+    })),
+  }));
+
+  const serializedRoles = roles.map((r) => ({
+    id: r.id,
+    name: r.name,
+    description: r.description,
+    scope: r.scope,
+    permissions: r.permissions as string[],
+    assignmentCount: r._count.assignments,
+  }));
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
-          <Shield className="h-5 w-5 text-indigo-600" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Permissions</h1>
-          <p className="text-sm text-slate-500">Manage roles and access control across your organization</p>
+      {/* Page header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
+            <Shield className="h-5 w-5 text-indigo-600" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Roles & Permissions</h1>
+            <p className="text-sm text-slate-500">
+              Define organizational roles and assign them to people in the right context
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Roles overview */}
+      {/* Roles section */}
       <section>
-        <h2 className="text-base font-semibold text-slate-700 mb-3 flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-slate-400" />
-          Defined Roles
-        </h2>
-        {roles.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-sm text-muted-foreground">
-              No custom roles defined yet. Users rely on their system role (ADMIN / SECRETARY / MEMBER).
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {roles.map((role) => (
-              <Card key={role.id} className="border-slate-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-slate-800">{role.name}</p>
-                    <Badge variant="outline" className="text-xs">{role.scope}</Badge>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {(role.permissions as string[]).slice(0, 5).map((p) => (
-                      <span key={p} className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-600">{p}</span>
-                    ))}
-                    {role.permissions.length > 5 && (
-                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">
-                        +{role.permissions.length - 5} more
-                      </span>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-slate-700 flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-slate-400" />
+            Roles
+            <Badge variant="secondary" className="font-normal">{roles.length}</Badge>
+          </h2>
+          {/* Create Role button is rendered client-side */}
+        </div>
 
-      <Separator />
-
-      {/* User role assignments */}
-      <section>
-        <h2 className="text-base font-semibold text-slate-700 mb-3 flex items-center gap-2">
-          <Users className="h-4 w-4 text-slate-400" />
-          User Permissions
-          <Badge variant="secondary">{users.length}</Badge>
-        </h2>
-        <Card>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {users.map((user) => (
-                <div key={user.id} className="flex items-center gap-4 px-5 py-4">
-                  {/* Avatar */}
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 font-semibold text-sm">
-                    {(user.name || user.email)[0].toUpperCase()}
-                  </div>
-
-                  {/* Name / email */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-800 truncate">
-                      {user.name || user.displayName || user.email}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                  </div>
-
-                  {/* System role badge */}
-                  <Badge
-                    variant={user.role === "ADMIN" ? "default" : "outline"}
-                    className="shrink-0"
-                  >
-                    {user.role}
-                  </Badge>
-
-                  {/* Fine-grained role assignments */}
-                  <div className="flex flex-wrap gap-1 max-w-xs">
-                    {user.roleAssignments.map((ra) => (
-                      <Badge key={ra.id} variant="secondary" className="text-xs">
-                        {ra.role.name}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  {/* Assign panel */}
-                  <RoleAssignPanel
-                    userId={user.id}
-                    userName={user.name || user.email}
-                    currentRole={user.role}
-                    orgRoles={rolesByScope.ORGANIZATION}
-                    committeeRoles={rolesByScope.COMMITTEE}
-                    committees={committees}
-                  />
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Role cards + create button — client component */}
+        <PermissionsClient
+          initialRoles={serializedRoles}
+          users={serializedUsers}
+          committees={committees}
+          capabilityLabels={CAPABILITY_LABELS}
+          scopeStyles={SCOPE_STYLES}
+        />
       </section>
     </div>
   );

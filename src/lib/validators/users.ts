@@ -21,7 +21,7 @@ export const updateUserSchema = z.object({
 
 export const assignRoleSchema = z.object({
   roleId: z.string().uuid(),
-  scopeType: z.enum(["ORGANIZATION", "COMMITTEE", "MEETING"]),
+  scopeType: z.enum(["ORGANIZATION", "COMMITTEE", "MEETING", "EVENT"]),
   scopeId: z.string().uuid().optional(),
 });
 

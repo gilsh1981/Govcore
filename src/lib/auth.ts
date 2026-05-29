@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { db } from "./db";
 
 function isPhone(value: string): boolean {
@@ -35,13 +36,13 @@ export const authOptions: NextAuthOptions = {
           console.log("[auth] detected email, looking up:", id);
           user = await db.user.findFirst({
             where: { email: id },
-            select: { id: true, email: true, phone: true, name: true, orgId: true, role: true },
+            select: { id: true, email: true, phone: true, name: true, orgId: true, role: true, status: true, passwordHash: true },
           });
         } else if (isPhone(id)) {
           console.log("[auth] detected phone, looking up:", normalized);
           user = await db.user.findFirst({
             where: { phone: normalized },
-            select: { id: true, email: true, phone: true, name: true, orgId: true, role: true },
+            select: { id: true, email: true, phone: true, name: true, orgId: true, role: true, status: true, passwordHash: true },
           });
         } else {
           console.log("[auth] identifier is neither email nor phone");
@@ -51,8 +52,17 @@ export const authOptions: NextAuthOptions = {
         console.log("[auth] user found:", user ? JSON.stringify({ id: user.id, email: user.email }) : "null");
         if (!user) return null;
 
-        // Temporary password gate until proper hashing is added
-        const pwMatch = pw === "admin123";
+        if (user.status === "DISABLED") {
+          console.log("[auth] user account is disabled");
+          return null;
+        }
+
+        if (!user.passwordHash) {
+          console.log("[auth] user has no password set");
+          return null;
+        }
+
+        const pwMatch = await bcrypt.compare(pw, user.passwordHash);
         console.log("[auth] password match:", pwMatch);
         if (!pwMatch) return null;
 
@@ -79,6 +89,12 @@ export const authOptions: NextAuthOptions = {
         const u = user as any;
         token.orgId = u.orgId;
         token.role = u.role;
+        // Fetch org name once at login so it's available in every session
+        const org = await db.organization.findUnique({
+          where: { id: u.orgId },
+          select: { name: true },
+        });
+        token.orgName = org?.name ?? "";
       }
       return token;
     },
@@ -86,6 +102,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.orgId = token.orgId;
+      session.user.orgName = token.orgName;
       session.user.role = token.role;
       return session;
     },

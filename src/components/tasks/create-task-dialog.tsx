@@ -80,7 +80,7 @@ export function CreateTaskDialog({
       title: fd.get("title"),
       description: fd.get("description") || undefined,
       priority,
-      assignedToId: assignedToId || undefined,
+      assignedToId: assignedToId && assignedToId !== "none" ? assignedToId : undefined,
       dueDate: dueDateRaw ? new Date(dueDateRaw).toISOString() : undefined,
       meetingId: meetingId || undefined,
       decisionId: decisionId || undefined,
@@ -145,7 +145,7 @@ export function CreateTaskDialog({
               <Select value={assignedToId} onValueChange={setAssignedToId}>
                 <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Unassigned</SelectItem>
+                  <SelectItem value="none">Unassigned</SelectItem>
                   {users.map((u) => (
                     <SelectItem key={u.id} value={u.id}>
                       {u.name || u.email}

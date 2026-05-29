@@ -111,7 +111,7 @@ export function CreateCommitteeDialog({
     const body: Record<string, unknown> = {
       name: formData.get("name"),
       description: formData.get("description") || undefined,
-      chairId: chairId || undefined,
+      chairId: chairId && chairId !== "none" ? chairId : undefined,
     };
 
     const res = await fetch("/api/committees", {
@@ -172,7 +172,7 @@ export function CreateCommitteeDialog({
                   <SelectValue placeholder="Select chair (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {users.map((u) => (
                     <SelectItem key={u.id} value={u.id}>
                       {u.name || u.email}

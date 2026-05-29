@@ -8,7 +8,7 @@
 - [x] Create seed data (organization + admin user giladin.sh@gmail.com)
 - [ ] Fix bugs across committees, meetings, decisions, and tasks (ongoing — see BUGS_FOUND.md)
 - [ ] Connect a real file storage backend so uploaded files are actually saved
-- [ ] Wire OrgSwitcher to real data instead of mock data
+- [x] Wire OrgSwitcher to real data instead of mock data
 - [ ] Start background workers properly (sync, recurrence)
 - [ ] Add a basic automated test suite
 

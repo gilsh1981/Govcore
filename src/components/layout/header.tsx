@@ -18,7 +18,7 @@ export function Header() {
     <header className="flex h-[60px] shrink-0 items-center gap-3 border-b border-slate-200/80 bg-white/95 px-5 backdrop-blur-sm">
 
       {/* Left: org switcher */}
-      <OrgSwitcher currentOrgId={session.user.orgId} />
+      <OrgSwitcher orgName={session.user.orgName} />
 
       {/* Divider */}
       <div className="h-5 w-px bg-slate-200" />

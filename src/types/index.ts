@@ -6,6 +6,7 @@ export interface SessionUser {
   email: string;
   name: string | null;
   orgId: string;
+  orgName: string;
   role: UserRole;
 }
 
@@ -20,6 +21,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     orgId: string;
+    orgName: string;
     role: UserRole;
   }
 }

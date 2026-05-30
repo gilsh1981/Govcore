@@ -111,7 +111,7 @@ export function CreateCommitteeDialog({
     const body: Record<string, unknown> = {
       name: formData.get("name"),
       description: formData.get("description") || undefined,
-      chairId: chairId && chairId !== "none" ? chairId : undefined,
+      chairUserId: chairId && chairId !== "none" ? chairId : undefined,
     };
 
     const res = await fetch("/api/committees", {

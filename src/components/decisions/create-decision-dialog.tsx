@@ -25,16 +25,14 @@ export function CreateDecisionDialog({ meetingId }: { meetingId: string }) {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const dueDate = formData.get("dueDate") as string;
 
     const res = await fetch("/api/decisions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: formData.get("title"),
-        body: formData.get("body") || undefined,
+        description: formData.get("description") || undefined,
         meetingId,
-        dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
       }),
     });
 
@@ -62,16 +60,10 @@ export function CreateDecisionDialog({ meetingId }: { meetingId: string }) {
             <Input id="title" name="title" required />
           </div>
           <div className="space-y-2">
-            <label htmlFor="body" className="text-sm font-medium">
+            <label htmlFor="description" className="text-sm font-medium">
               {t("descriptionLabel")}
             </label>
-            <Textarea id="body" name="body" />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="dueDate" className="text-sm font-medium">
-              {t("dueDateLabel")}
-            </label>
-            <Input id="dueDate" name="dueDate" type="date" />
+            <Textarea id="description" name="description" />
           </div>
           <div className="flex justify-end">
             <Button type="submit" disabled={loading}>

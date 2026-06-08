@@ -9,7 +9,7 @@
 - [ ] Fix bugs across committees, meetings, decisions, and tasks (ongoing — see BUGS_FOUND.md)
 - [x] Connect a real file storage backend so uploaded files are actually saved
 - [x] Wire OrgSwitcher to real data instead of mock data
-- [ ] Start background workers properly (sync, recurrence)
+- [x] Start background workers properly (sync, recurrence)
 - [ ] Add a basic automated test suite
 
 ## Exit criteria

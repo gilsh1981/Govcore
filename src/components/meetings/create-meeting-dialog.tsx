@@ -69,6 +69,7 @@ export function CreateMeetingDialog({
 }: CreateMeetingDialogProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
 
   // Form state
@@ -95,6 +96,7 @@ export function CreateMeetingDialog({
     setParticipation("PHYSICAL");
     setRecurrence("NONE");
     setAiTranscription(false);
+    setError("");
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -125,7 +127,7 @@ export function CreateMeetingDialog({
       router.refresh();
     } else {
       const err = await res.json().catch(() => ({}));
-      console.error("Meeting creation failed", err);
+      setError(err.error || "Failed to create meeting. Please try again.");
     }
     setLoading(false);
   }
@@ -138,6 +140,9 @@ export function CreateMeetingDialog({
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-5">
+          {error && (
+            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 border border-red-200">{error}</p>
+          )}
           {/* Standalone toggle (only show if committees exist) */}
           {committees.length > 0 && (
             <div className="flex items-center justify-between rounded-lg border bg-slate-50 px-4 py-3">

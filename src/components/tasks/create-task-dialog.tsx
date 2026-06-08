@@ -51,6 +51,7 @@ export function CreateTaskDialog({
   const router = useRouter();
   const [internalOpen, setInternalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [assignedToId, setAssignedToId] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
@@ -96,7 +97,11 @@ export function CreateTaskDialog({
       setOpen(false);
       setAssignedToId("");
       setPriority("MEDIUM");
+      setError("");
       router.refresh();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      setError(err.error || "Failed to create task. Please try again.");
     }
     setLoading(false);
   }
@@ -111,6 +116,9 @@ export function CreateTaskDialog({
           <DialogTitle>Create Task</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
+          {error && (
+            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600 border border-red-200">{error}</p>
+          )}
           {/* Title */}
           <div className="space-y-1.5">
             <label htmlFor="taskTitle" className="text-sm font-medium">Title *</label>

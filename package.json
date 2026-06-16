@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "prisma db seed",
+    "workers": "tsx src/workers/index.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
